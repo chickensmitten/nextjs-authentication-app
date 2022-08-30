@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { signIn } from "next-auth/client";
 import classes from "./auth-form.module.css";
 
 async function createUser(email, password) {
@@ -15,7 +16,7 @@ async function createUser(email, password) {
   if (!response.ok) {
     throw new Error(data.message || "Something went wrong!");
   }
-  
+
   return data;
 }
 
@@ -38,7 +39,14 @@ function AuthForm() {
     // optional: add validation, but not necessary, because server side in api/auth already has it
 
     if (isLogin) {
-      //  log in
+      //  goes to [...nextauth].js
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: enteredEmail,
+        password: enteredPassword,
+      });
+
+      console.log(result);
     } else {
       try {
         const result = await createUser(enteredEmail, enteredPassword);
